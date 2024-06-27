@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog System</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        header {
+            background: #333;
+            color: white;
+            padding: 1rem;
+            width: 100%;
+            text-align: center;
+        }
+        form {
+            margin: 2rem;
+            padding: 2rem;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            width: 300px;
+            display: flex;
+            flex-direction: column;
+        }
+        form input, form textarea {
+            margin-bottom: 1rem;
+            padding: 0.5rem;
+            font-size: 1rem;
+        }
+        form button {
+            padding: 0.5rem;
+            background: #333;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        form button:hover {
+            background: #555;
+        }
+        .blogs {
+            margin: 2rem;
+            width: 80%;
+        }
+        .blog {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-bottom: 1rem;
+            padding: 1rem;
+        }
+        .blog h2 {
+            margin-top: 0;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Blog System</h1>
+    </header>
+
+    <form id="blog-form">
+        <input type="text" id="title" placeholder="Title" required>
+        <input type="text" id="author" placeholder="Author" required>
+        <textarea id="content" placeholder="Content" required></textarea>
+        <button type="submit">Submit Blog</button>
+    </form>
+
+    <div class="blogs" id="blogs"></div>
+
+    <script>
+        document.getElementById('blog-form').addEventListener('submit', async function(event) {
+            event.preventDefault();
+
+            const title = document.getElementById('title').value;
+            const author = document.getElementById('author').value;
+            const content = document.getElementById('content').value;
+
+            try {
+                const response = await fetch('https://new-rwn-b2146665501d.herokuapp.com/submit-blog', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ title, author, content })
+                });
+
+                if (response.ok) {
+                    alert('Blog post submitted successfully');
+                    document.getElementById('title').value = '';
+                    document.getElementById('author').value = '';
+                    document.getElementById('content').value = '';
+                    loadBlogs();
+                } else {
+                    const errorText = await response.text();
+                    alert('Error submitting blog post: ' + errorText);
+                }
+            } catch (error) {
+                console.error('Error submitting blog post:', error);
+                alert('Error submitting blog post: ' + error.message);
+            }
+        });
+
+        async function loadBlogs() {
+            try {
+                const response = await fetch('https://new-rwn-b2146665501d.herokuapp.com/get-blogs');
+                const blogs = await response.json();
+                const blogsContainer = document.getElementById('blogs');
+                blogsContainer.innerHTML = '';
+                blogs.forEach(blog => {
+                    const blogElement = document.createElement('div');
+                    blogElement.className = 'blog';
+                    blogElement.innerHTML = `
+                        <h2>${blog.title}</h2>
+                        <p><strong>Author:</strong> ${blog.author}</p>
+                        <p>${blog.content}</p>
+                        <p><em>${new Date(blog.date).toLocaleString()}</em></p>
+                    `;
+                    blogsContainer.appendChild(blogElement);
+                });
+            } catch (error) {
+                console.error('Error fetching blogs:', error);
+                alert('Error fetching blogs: ' + error.message);
+            }
+        }
+
+        // Load blogs on page load
+        loadBlogs();
+    </script>
+</body>
+</html>

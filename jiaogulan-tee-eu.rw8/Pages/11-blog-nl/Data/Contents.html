@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog Systeem</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #f4f4f9;
+        }
+        header {
+            background: #333;
+            color: white;
+            padding: 1rem;
+            width: 100%;
+            text-align: center;
+        }
+        .blogs {
+            margin: 2rem;
+            width: 80%;
+        }
+        .blog {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-bottom: 1rem;
+            padding: 1rem;
+            background-color: white;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .blog h2 {
+            margin-top: 0;
+            font-size: 1.5rem;
+        }
+        .blog h3 {
+            font-size: 1.2rem;
+            color: #555;
+        }
+        .blog p {
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+        .blog .date {
+            color: #999;
+            font-style: italic;
+            margin-top: 1rem;
+        }
+        .blog img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 1rem auto;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Blog Systeem</h1>
+    </header>
+
+    <div class="blogs" id="blogs"></div>
+
+    <script>
+        async function loadBlogs() {
+            try {
+                const response = await fetch('https://new-rwn-b2146665501d.herokuapp.com/get-blogs-nl');
+                const text = await response.text();
+                console.log('Raw response:', text);
+                const blogs = JSON.parse(text);
+                const blogsContainer = document.getElementById('blogs');
+                blogsContainer.innerHTML = '';
+                blogs.forEach(blog => {
+                    console.log('Blog data:', blog);
+                    const blogElement = document.createElement('div');
+                    blogElement.className = 'blog';
+                    blogElement.innerHTML = `
+                        <h2>${blog.title || 'Geen Titel'}</h2>
+                        <img src="${blog.image_url || 'https://example.com/default-image.jpg'}" alt="${blog.title || 'Geen Titel'}">
+                        <p>${formatBlogContent(blog.full_text || 'Geen inhoud beschikbaar')}</p>
+                        <p class="date">${new Date(blog.published || Date.now()).toLocaleString()}</p>
+                    `;
+                    blogsContainer.appendChild(blogElement);
+                });
+            } catch (error) {
+                console.error('Error fetching blogs:', error);
+                alert('Error fetching blogs: ' + error.message);
+            }
+        }
+
+        function formatBlogContent(content) {
+            return content.replace(/\n/g, ' ');
+        }
+
+        loadBlogs();
+    </script>
+</body>
+</html>

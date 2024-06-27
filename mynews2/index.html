@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cryptocurrency News</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .news-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+        }
+        .news-item {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            margin: 10px;
+            padding: 20px;
+            width: calc(100% - 40px);
+            max-width: 900px;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+        .news-image {
+            width: 200px;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-right: 20px;
+        }
+        .news-content {
+            flex: 1;
+        }
+        .news-item h3 {
+            margin: 0;
+            font-size: 1.5em;
+            color: #333;
+        }
+        .news-item p {
+            color: #666;
+            margin: 10px 0;
+        }
+        .news-item time {
+            font-size: 0.8em;
+            color: #999;
+        }
+        .loading {
+            font-size: 1.2em;
+            color: #555;
+            text-align: center;
+            margin-top: 50px;
+        }
+        .error {
+            color: red;
+            text-align: center;
+            margin-top: 50px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Latest Cryptocurrency News</h1>
+    <div id="rss-feed" class="news-container loading">Loading...</div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const rssUrl = 'https://cointelegraph.com/rss'; // Cointelegraph RSS feed URL
+            const proxyUrl = 'https://api.allorigins.win/get?url=' + encodeURIComponent(rssUrl);
+            const rssFeedContainer = document.getElementById('rss-feed');
+
+            async function fetchArticles() {
+                try {
+                    const response = await fetch(proxyUrl);
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    const data = await response.json();
+                    const parser = new DOMParser();
+                    const xml = parser.parseFromString(data.contents, "application/xml");
+                    const items = Array.from(xml.querySelectorAll('item')).slice(0, 10); // Get the latest 10 articles
+                    return items.map(item => ({
+                        title: item.querySelector('title').textContent,
+                        link: item.querySelector('link').textContent,
+                        pubDate: item.querySelector('pubDate').textContent
+                    }));
+                } catch (error) {
+                    console.error('Error fetching articles:', error);
+                    throw error;
+                }
+            }
+
+            async function fetchFullArticleContent(url) {
+                try {
+                    const response = await fetch('https://api.allorigins.win/get?url=' + encodeURIComponent(url));
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    const data = await response.json();
+                    const parser = new DOMParser();
+                    const html = parser.parseFromString(data.contents, "text/html");
+                    const articleContent = html.querySelector('.post-content'); // Adjust the selector based on the website's structure
+                    if (articleContent) {
+                        // Remove images from the content
+                        articleContent.querySelectorAll('img').forEach(img => img.remove());
+                        return articleContent.innerHTML;
+                    } else {
+                        throw new Error('Failed to fetch the full article content.');
+                    }
+                } catch (error) {
+                    console.error('Error fetching article content:', error);
+                    throw error;
+                }
+            }
+
+            async function rewriteArticleContent(content, title) {
+                try {
+                    const response = await fetch('https://markts.eu:8000/rewrite-content', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ content, title })
+                    });
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    const data = await response.json();
+                    return data.rewrittenContent;
+                } catch (error) {
+                    console.error('Error rewriting article content:', error);
+                    throw error;
+                }
+            }
+
+            async function displayArticles() {
+                try {
+                    const articles = await fetchArticles();
+                    rssFeedContainer.innerHTML = ''; // Clear the loading message
+
+                    const promises = articles.map(async article => {
+                        try {
+                            const content = await fetchFullArticleContent(article.link);
+                            const rewrittenContent = await rewriteArticleContent(content, article.title);
+                            displayRewrittenArticle(
+                                rewrittenContent.title,
+                                rewrittenContent.description,
+                                article.pubDate,
+                                rewrittenContent.image_url
+                            );
+                        } catch (error) {
+                            console.error('Error processing article:', error);
+                        }
+                    });
+
+                    await Promise.all(promises);
+                } catch (error) {
+                    console.error('Error:', error);
+                    rssFeedContainer.textContent = 'Error loading news. Please try again later.';
+                    rssFeedContainer.classList.add('error');
+                }
+            }
+
+            function displayRewrittenArticle(title, content, pubDateStr, imageUrl) {
+                const newsItem = document.createElement('div');
+                newsItem.classList.add('news-item');
+
+                const newsImage = document.createElement('img');
+                newsImage.src = imageUrl;
+                newsImage.alt = title;
+                newsImage.classList.add('news-image');
+
+                const newsContent = document.createElement('div');
+                newsContent.classList.add('news-content');
+
+                const newsTitle = document.createElement('h3');
+                newsTitle.textContent = title;
+
+                const newsDescription = document.createElement('div');
+                newsDescription.innerHTML = content;
+
+                const newsPubDate = document.createElement('time');
+                const pubDate = new Date(pubDateStr);
+                if (!isNaN(pubDate.getTime())) {
+                    newsPubDate.textContent = `Published on: ${pubDate.toLocaleString()}`;
+                } else {
+                    newsPubDate.textContent = 'Published on: Date Unavailable';
+                }
+
+                newsContent.appendChild(newsTitle);
+                newsContent.appendChild(newsDescription);
+                newsContent.appendChild(newsPubDate);
+
+                newsItem.appendChild(newsImage);
+                newsItem.appendChild(newsContent);
+
+                rssFeedContainer.appendChild(newsItem);
+            }
+
+            displayArticles();
+        });
+    </script>
+</body>
+</html>

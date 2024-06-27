@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cryptocurrency News</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .news-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+        }
+        .news-item {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            margin: 10px;
+            padding: 20px;
+            width: calc(100% - 40px);
+            max-width: 900px;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+        .news-image {
+            width: 200px;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-right: 20px;
+        }
+        .news-content {
+            flex: 1;
+        }
+        .news-item h3 {
+            margin: 0;
+            font-size: 1.5em;
+            color: #333;
+        }
+        .news-item p {
+            color: #666;
+            margin: 10px 0;
+        }
+        .news-item time {
+            font-size: 0.8em;
+            color: #999;
+        }
+        .loading {
+            font-size: 1.2em;
+            color: #555;
+            text-align: center;
+            margin-top: 50px;
+        }
+        .error {
+            color: red;
+            text-align: center;
+            margin-top: 50px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Latest Cryptocurrency News</h1>
+    <div id="rss-feed" class="news-container loading">Loading...</div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const rssFeedContainer = document.getElementById('rss-feed');
+
+            function fetchArticles() {
+                return fetch('/get-articles')
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
+                    .then(data => data)
+                    .catch(error => {
+                        console.error('Error:', error);
+                        rssFeedContainer.textContent = 'Error loading news. Please try again later.';
+                        rssFeedContainer.classList.add('error');
+                    });
+            }
+
+            function displayArticle(title, description, pubDate, imageUrl) {
+                const newsItem = document.createElement('div');
+                newsItem.classList.add('news-item');
+
+                const newsImage = document.createElement('img');
+                newsImage.src = imageUrl;
+                newsImage.alt = title;
+                newsImage.classList.add('news-image');
+
+                const newsContent = document.createElement('div');
+                newsContent.classList.add('news-content');
+
+                const newsTitle = document.createElement('h3');
+                newsTitle.innerHTML = title;
+
+                const newsDescription = document.createElement('div');
+                newsDescription.innerHTML = description;
+
+                const newsPubDate = document.createElement('time');
+                newsPubDate.textContent = `Published on: ${new Date(pubDate).toLocaleString()}`;
+
+                newsContent.appendChild(newsTitle);
+                newsContent.appendChild(newsDescription);
+                newsContent.appendChild(newsPubDate);
+
+                newsItem.appendChild(newsImage);
+                newsItem.appendChild(newsContent);
+
+                rssFeedContainer.appendChild(newsItem);
+            }
+
+            fetchArticles().then(articles => {
+                rssFeedContainer.innerHTML = ''; // Clear the loading message
+                articles.forEach(article => {
+                    displayArticle(article.title, article.description, article.formattedPubDate, article.image_url);
+                });
+            });
+        });
+    </script>
+</body>
+</html>

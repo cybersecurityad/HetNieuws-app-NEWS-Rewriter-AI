@@ -1,0 +1,185 @@
+@import url(https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,800|Merriweather:300), 
+  url(https://markmurray.co/codepen/customstyle.css);
+
+*, *:before, *:after {
+  box-sizing: border-box;
+}
+a, a:visited {
+  display: block;
+  text-decoration: inherit;
+  color: inherit;
+}
+
+html, body {
+  font-family: 'Open Sans', sans-serif;
+  font-size: 100%;
+  background: #d1d3d8; /* darken(#e8eaef, 2%) equivalent */
+}
+
+$blog--height: 200px;
+
+.container {
+  padding: 0.5em 1em 1em;
+  max-width: calc(1400px + 1em);
+  margin: 0 auto;
+  overflow: hidden;
+
+  .blog-posts {
+    .featured {
+      width: 100% !important;
+      height: 250px !important;
+      margin: 0.5em 0 1em 0 !important;
+      .image {
+        height: 250px !important;
+      }
+      .content {
+        height: 250px !important;
+      }
+    }
+
+    .row {
+      display: flex;
+      .post {
+        &:last-child {
+          margin-right: 0 !important;
+        }
+      }
+    }
+
+    .post {
+      flex: 1;
+      overflow: hidden;
+      background: white;
+      height: $blog--height;
+      box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.2);
+      margin-right: 1em;
+      margin-bottom: 1em;
+
+      &:hover {
+        box-shadow: 0 0 3px 2px rgba(0, 0, 0, 0.1);
+        .image {
+          opacity: 0.8;
+        }
+      }
+
+      .image, .content {
+        display: inline-block;
+        position: relative;
+        transition: all 500ms ease;
+      }
+
+      .image {
+        float: left;
+        width: 50%;
+        height: $blog--height;
+        background-size: cover;
+        background-position: center center;
+
+        .time {
+          background: rgba(255, 255, 255, 0.5);
+          width: 50px;
+          text-align: center;
+          padding: 0.5em 0;
+          color: #444;
+
+          .date {
+            font-weight: bolder;
+          }
+
+          .month {
+            font-size: 0.7rem;
+          }
+        }
+      }
+
+      .content {
+        padding: 0.5em 1em;
+        width: 50%;
+        box-shadow: -2px 0 2px -1px rgba(0, 0, 0, 0.1);
+        height: $blog--height;
+
+        &:before {
+          content: '';
+          position: absolute;
+          background: white;
+          width: 10px;
+          height: 10px;
+          top: 20%;
+          left: -5px;
+          transform: rotate(45deg);
+          box-shadow: -1px 0 2px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+          font-weight: 600;
+          line-height: 2;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
+        p {
+          font-weight: 300;
+          font-size: 0.7rem;
+          line-height: 1.5;
+          margin-bottom: 0.5em;
+          font-family: 'Merriweather', sans-serif;
+        }
+
+        .meta {
+          .icon-comment {
+            font-size: 0.7em;
+            line-height: 2;
+            margin-top: auto;
+          }
+        }
+      }
+    }
+  }
+}
+
+[class^="icon-"]:before {
+  margin-right: 0.5em;
+  color: #3498db;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+@media screen and (max-width: 840px) {
+  .row {
+    display: block !important;
+
+    .post {
+      width: 100%;
+      margin: 0;
+    }
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .content {
+    width: 70% !important;
+  }
+  .image {
+    width: 30% !important;
+  }
+
+  h1 {
+    text-overflow: inherit;
+    white-space: normal;
+  }
+}
+
+/* clearfix */
+.cf:before,
+.cf:after {
+  content: " ";
+  display: table;
+}
+
+.cf:after {
+  clear: both;
+}

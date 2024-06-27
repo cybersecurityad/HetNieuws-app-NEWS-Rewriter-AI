@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cryptocurrency News</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .news-item {
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #ccc;
+        }
+        .news-item h3 {
+            margin: 0;
+            font-size: 1.2em;
+        }
+        .news-item p {
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Latest Cryptocurrency News</h1>
+    <div id="rss-feed"></div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const rssUrl = 'https://cointelegraph.com/rss'; // Cointelegraph RSS feed URL
+            const proxyUrl = 'https://api.allorigins.win/get?url=' + encodeURIComponent(rssUrl);
+            const rssFeedContainer = document.getElementById('rss-feed');
+
+            fetch(proxyUrl)
+                .then(response => response.json())
+                .then(data => {
+                    const parser = new DOMParser();
+                    const xml = parser.parseFromString(data.contents, "application/xml");
+                    const items = Array.from(xml.querySelectorAll('item')).slice(0, 10); // Get the latest 10 articles
+
+                    const articles = items.map(item => ({
+                        title: item.querySelector('title').textContent,
+                        description: item.querySelector('description').textContent.replace(/<img[^>]*>/g, ""), // Remove images
+                        link: item.querySelector('link').textContent,
+                        pubDate: item.querySelector('pubDate').textContent
+                    }));
+
+                    console.log("Fetched Articles:", articles);
+
+                    fetch('https://rewrite-news.vercel.app/process-articles', { // Change this to your Vercel URL
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ articles })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log("Rewritten Articles:", data);
+
+                        if (data.rewrittenArticles) {
+                            data.rewrittenArticles.forEach(article => {
+                                // Display the article
+                                const newsItem = document.createElement('div');
+                                newsItem.classList.add('news-item');
+
+                                const newsTitle = document.createElement('h3');
+                                const newsLink = document.createElement('a');
+                                newsLink.href = article.link;
+                                newsLink.textContent = article.title;
+                                newsLink.target = '_blank';
+                                newsTitle.appendChild(newsLink);
+
+                                const newsDescription = document.createElement('p');
+                                newsDescription.innerHTML = article.description;
+
+                                const newsPubDate = document.createElement('p');
+                                newsPubDate.textContent = `Published on: ${new Date(article.pubDate).toLocaleString()}`;
+
+                                newsItem.appendChild(newsTitle);
+                                newsItem.appendChild(newsDescription);
+                                newsItem.appendChild(newsPubDate);
+
+                                rssFeedContainer.appendChild(newsItem);
+                            });
+                        } else {
+                            console.error('No rewritten articles found in response.');
+                        }
+                    })
+                    .catch(error => console.error('Error processing articles:', error));
+                })
+                .catch(error => console.error('Error fetching the RSS feed:', error));
+        });
+    </script>
+</body>
+</html>

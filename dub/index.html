@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Basic -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    
+    <!-- Mobile Metas -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+   
+    <!-- Design fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Bootstrap core CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Custom styles -->
+    <style>
+        @media (max-width: 768px) {
+            .main-container {
+                flex-direction: column;
+            }
+            .main-content, .sidebar {
+                width: 100%;
+            }
+        }
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+        }
+        body, .main-container {
+            display: flex;
+            flex-direction: column; 
+        }
+        body .site-header {
+            width: 100%;
+            top: 0;
+            position: relative; 
+        }
+        header {
+            order: -1; 
+        }
+        header {
+            background: #fff;
+            color: #333;
+            padding: 1rem 0;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        header h1 {
+            color: #ff477e;
+            font-weight: bold;
+            font-size: 55px;
+            font-weight: bold;
+        }
+        h1 {
+            font-size: 55px;
+            font-weight: bold;
+        }
+        h2 {
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .navbar {
+            justify-content: center;
+        }
+        .navbar-nav .nav-item .nav-link {
+            color: #333;
+            font-weight: 500;
+        }
+        .navbar-nav .nav-item .nav-link:hover {
+            color: #ff477e;
+        }
+        .main-container {
+            display: flex;
+            flex-direction: row; /* This aligns the children horizontally */
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+        
+        .main-content {
+            flex: 3;
+            margin-right: 2rem;
+        }
+        .sidebar {
+            flex: 1;
+        }
+        .article {
+            background-color: #fff;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* Center the content horizontally */
+        }
+        .article img {
+            width: 60%; /* Adjusts the image width to take the full width of the article */
+            height: auto; /* Maintains the aspect ratio of the image */
+            border-radius: 10px;
+        }
+        .article h2 {
+            color: #000;
+            font-weight: bold;
+        }
+        .footer {
+            padding: 1rem;
+            text-align: center;
+            background: #fff;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+            margin-top: 2rem;
+        }
+        .read-more {
+            color: #fff;
+            font-weight: 500;
+            background-color: #ff477e;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            text-decoration: none;
+        }
+        .widget-title {
+            font-weight: bold;
+        }
+        .widget_recent_entries ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        .widget_recent_entries ul li {
+            margin-bottom: 0.5rem;
+        }
+        .widget_recent_entries ul li a {
+            color: #1e73be;
+            text-decoration: none;
+        }
+        .widget_recent_entries ul li a:hover {
+            text-decoration: underline;
+        }
+        .navbar .navbar-nav .nav-item {
+            position: relative;
+        }
+        .navbar .navbar-nav .nav-item .dropdown-menu {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background-color: #f9f9f9;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+        }
+        
+        .navbar .navbar-nav .nav-item:hover .dropdown-menu {
+            display: block;
+        }
+        
+        .navbar .navbar-nav .dropdown-menu li {
+            padding: 8px 16px;
+            text-decoration: none;
+            display: block;
+        }
+        
+        .navbar .navbar-nav .dropdown-menu li a {
+            color: black;
+            text-decoration: none; /* Removes underline from links */
+        }
+        
+        .navbar .navbar-nav .dropdown-menu li a:hover {
+            background-color: #ddd; /* Gray background on hover */
+        }
+    </style>
+</head> 
+<body>
+    
+    <header class="site-header">
+        <h1><a href="http://www.headlinesmagazine.com" style="text-decoration: none; color: inherit;">headlinesmagazine.com</a></h1>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <ul class="navbar-nav">
+                <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+                <li class="nav-item"><a class="nav-link" href="/shopping">Shopping</a></li>
+    
+                <!-- Lifestyle and related categories -->
+                <li class="nav-item">
+                    <a class="nav-link" href="/lifestyle">Lifestyle</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="/health">Health</a></li>
+                        <li><a href="/beauty">Beauty</a></li>
+                        <li><a href="/fashion">Fashion</a></li>
+                        <li><a href="/food">Food</a></li>
+                        <li><a href="/travel">Travel</a></li>
+                    </ul>
+                </li>
+    
+                <!-- Science and related categories -->
+                <li class="nav-item">
+                    <a class="nav-link" href="/science">Science</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="/technology">Technology</a></li>
+                        <li><a href="/cryptocurrency">Cryptocurrency</a></li>
+                        <li><a href="/blockchain">Blockchain</a></li>
+                    </ul>
+                </li>
+    
+                <!-- News and regional categories -->
+                <li class="nav-item">
+                    <a class="nav-link" href="/news">News</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="/europe">Europe</a></li>
+                        <li><a href="/us">United States</a></li>
+                        <li><a href="/asia">Asia</a></li>
+                        <li><a href="/africa">Africa</a></li>
+                        <li><a href="/middle-east">Middle East</a></li>
+                        <li><a href="/americas">Americas</a></li>
+                    </ul>
+                </li>
+    
+                <li class="nav-item"><a class="nav-link" href="/marketing">Marketing</a></li>
+                <li class="nav-item"><a class="nav-link" href="/entertainment">Entertainment</a></li>
+                <li class="nav-item"><a class="nav-link" href="/sport">Sports</a></li>
+                
+                <li class="nav-item">
+                    <a class="nav-link" href="/about">About</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="/privacy-policy">Privacy Policy</a></li>
+                        <li><a href="/terms-of-service">Terms of Service</a></li>
+                        <li><a href="/disclaimer">Disclaimer</a></li>
+                        <li><a href="/contact">Contact</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </nav>
+    </header>
+    <div class="main-container">
+    <div class="main-content" id="main-content">
+        <!-- Articles will be injected here -->
+    </div>
+    <aside class="sidebar">
+        <div id="recent-posts-2" class="widget widget_recent_entries">
+            <h3 class="widget-title">Latest Posts</h3>
+            <ul>
+                <li>
+                    <a href="https://www.bioherby.de">Bioherby 1</a>
+                </li>
+                <li>
+                    <a href="/blogx">Blog X</a>
+                </li>
+                <li>
+                    <a href="#">Your Custom Post 3</a>
+                </li>
+                <li>
+                    <a href="#">Your Custom Post 4</a>
+                </li>
+                <li>
+                    <a href="#">Your Custom Post 5</a>
+                </li>
+            </ul>
+        </div>
+    </aside>
+</div>
+
+<footer class="footer">
+    <p>&copy; 2024 Blog System X. All Rights Reserved.</p>
+</footer>
+
+<script>
+    async function loadBlogs() {
+        try {
+            const response = await fetch('https://new-rwn-b2146665501d.herokuapp.com/get-blogs');
+            const blogs = await response.json();
+            const container = document.getElementById('main-content');
+
+            blogs.forEach(blog => {
+                const article = document.createElement('div');
+                article.className = 'article';
+
+                // Use the stored slug for URLs
+                let titleSlug = blog.slug;
+
+                // Remove original images from cointelegraph
+                let fullText = blog.full_text.replace(/<img[^>]*src="https:\/\/images\.cointelegraph\.com\/[^>]*>/g, '');
+
+                // Log the blog data to troubleshoot image issues
+                console.log(blog);
+
+                article.innerHTML = `
+                    <h2>${blog.title}</h2>
+                    <img src="${blog.image_url}" alt="${blog.title}" onerror="this.onerror=null;this.src='https://via.placeholder.com/400';">
+                    <p>${fullText.split(' ').slice(0, 20).join(' ')}...</p>
+                    <a href="/category/technology/${titleSlug}.html" class="read-more">Read More</a>
+                `;
+                container.appendChild(article);
+            });
+        } catch (error) {
+            console.error('Error fetching blogs:', error);
+            alert('Error fetching blogs: ' + error.message);
+        }
+    }
+    loadBlogs();
+</script>
+
+</body>
+</html>

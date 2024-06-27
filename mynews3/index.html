@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cryptocurrency News</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .news-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+        }
+        .news-item {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            margin: 10px;
+            padding: 20px;
+            width: calc(100% - 40px);
+            max-width: 900px;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+        .news-image {
+            width: 200px;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-right: 20px;
+        }
+        .news-content {
+            flex: 1;
+        }
+        .news-item h3 {
+            margin: 0;
+            font-size: 1.5em;
+            color: #333;
+        }
+        .news-item p {
+            color: #666;
+            margin: 10px 0;
+        }
+        .news-item time {
+            font-size: 0.8em;
+            color: #999;
+        }
+        .loading {
+            font-size: 1.2em;
+            color: #555;
+            text-align: center;
+            margin-top: 50px;
+        }
+        .error {
+            color: red;
+            text-align: center;
+            margin-top: 50px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Latest Cryptocurrency News</h1>
+    <div id="rss-feed" class="news-container loading">Loading...</div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const rssUrl = '
+            '; // Cointelegraph RSS feed URL
+            const proxyUrl = 'https://api.allorigins.win/get?url=' + encodeURIComponent(rssUrl);
+            const rssFeedContainer = document.getElementById('rss-feed');
+
+            function fetchArticles() {
+                return fetch(proxyUrl)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        const parser = new DOMParser();
+                        const xml = parser.parseFromString(data.contents, "application/xml");
+                        const items = Array.from(xml.querySelectorAll('item')).slice(0, 10); // Get the latest 10 articles
+
+                        return items.map(item => ({
+                            title: item.querySelector('title').textContent,
+                            link: item.querySelector('link').textContent,
+                            pubDate: item.querySelector('pubDate').textContent
+                        }));
+                    });
+            }
+
+            function fetchFullArticleContent(url) {
+                return fetch('https://api.allorigins.win/get?url=' + encodeURIComponent(url))
+                    .then(response => response.json())
+                    .then(data => {
+                        const parser = new DOMParser();
+                        const html = parser.parseFromString(data.contents, "text/html");
+                        const articleContent = html.querySelector('.post-content'); // Adjust the selector based on the website's structure
+                        if (articleContent) {
+                            // Remove images from the content
+                            articleContent.querySelectorAll('img').forEach(img => img.remove());
+                            return articleContent.innerHTML;
+                        } else {
+                            throw new Error('Failed to fetch the full article content.');
+                        }
+                    });
+            }
+
+            function rewriteArticleContent(content, title) {
+                return fetch('https://markts.eu:8000/rewrite-content', { // Change this to your server URL
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ content, title })
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => data.rewrittenContent);
+            }
+
+            function displayRewrittenArticle(title, content, pubDate, imageUrl) {
+                const newsItem = document.createElement('div');
+                newsItem.classList.add('news-item');
+
+                const newsImage = document.createElement('img');
+                newsImage.src = imageUrl;
+                newsImage.alt = title;
+                newsImage.classList.add('news-image');
+
+                const newsContent = document.createElement('div');
+                newsContent.classList.add('news-content');
+
+                const newsTitle = document.createElement('h3');
+                newsTitle.innerHTML = title;
+
+                const newsDescription = document.createElement('div'); // Changed to 'div' to support inner HTML
+                newsDescription.innerHTML = content;
+
+                const newsPubDate = document.createElement('time');
+                newsPubDate.textContent = `Rewritten on: ${new Date().toLocaleString()}`;
+
+                newsContent.appendChild(newsTitle);
+                newsContent.appendChild(newsDescription);
+                newsContent.appendChild(newsPubDate);
+
+                newsItem.appendChild(newsImage);
+                newsItem.appendChild(newsContent);
+
+                rssFeedContainer.appendChild(newsItem);
+            }
+
+            fetchArticles()
+                .then(articles => {
+                    rssFeedContainer.innerHTML = ''; // Clear the loading message
+                    return Promise.all(articles.map(article => {
+                        return fetchFullArticleContent(article.link)
+                            .then(content => rewriteArticleContent(content, article.title))
+                            .then(rewrittenContent => displayRewrittenArticle(
+                                rewrittenContent.title,
+                                rewrittenContent.description,
+                                rewrittenContent.pubDate,
+                                rewrittenContent.image_url
+                            ))
+                            .catch(error => {
+                                console.error('Error processing article:', error);
+                            });
+                    }));
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    rssFeedContainer.textContent = 'Error loading news. Please try again later.';
+                    rssFeedContainer.classList.add('error');
+                });
+        });
+    </script>
+</body>
+</html>

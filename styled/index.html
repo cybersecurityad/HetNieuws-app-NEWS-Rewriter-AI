@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<meta name="robots" content="index, follow" />
+		<meta name="generator" content="RapidWeaver" />
+		<link rel="apple-touch-icon" sizes="167x167" href="https://jiaogulan-tee.eu/resources/medium.png" />
+<link rel="apple-touch-icon" sizes="180x180" href="https://jiaogulan-tee.eu/resources/logo.webp" />
+<link rel="apple-touch-icon" sizes="152x152" href="https://jiaogulan-tee.eu/resources/small.png" />
+<link rel="mask-icon" href="https://jiaogulan-tee.eu/resources/logo.webp" color="rgba(255,255,255,1.00)" /><link rel="icon" type="image/png" href="https://jiaogulan-tee.eu/resources/favicon_medium.png" sizes="32x32" />
+<link rel="icon" type="image/png" href="https://jiaogulan-tee.eu/resources/favicon_small.png" sizes="16x16" />
+<link rel="icon" type="image/png" href="https://jiaogulan-tee.eu/resources/favicon_large.png" sizes="64x64" />
+
+	<meta name="twitter:card" content="summary">
+	<meta name="twitter:title" content="Untitled Page 2">
+	<meta name="twitter:url" content="https://jiaogulan-tee.eu/styled/index.html">
+	<meta property="og:type" content="website">
+	<meta property="og:site_name" content="jiaogulan-tee vergleich ">
+	<meta property="og:title" content="Untitled Page 2">
+	<meta property="og:url" content="https://jiaogulan-tee.eu/styled/index.html">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="viewport" content="width=device-width">
+  <meta name="baseurl" content="https://jiaogulan-tee.eu/">
+
+  <title>Untitled Page 2</title>
+
+  <link rel="stylesheet" type="text/css" media="all" href="../rw_common/themes/offroad/consolidated.css?rwcache=739980743" />
+		
+  
+
+  <!--[if lt IE 9]>
+    <script src="../rw_common/themes/offroad/assets/javascript/html5shiv.js"></script>
+    <script src="../rw_common/themes/offroad/assets/javascript/respond.js"></script>
+  <![endif]-->
+
+  
+  
+  
+</head>
+
+<body>
+  <div id="page" class="site">
+    <a class="sr-only sr-only-focusable" href="#content">Skip to main content</a>
+
+    <nav class="site-navigation" role="navigation">
+      <div class="row">
+        <div class="col-xs-12">
+          <div class="site-navigation-inner">
+            <ul><li><a href="../" rel="">Home</a></li><li class="selected"><a href="./" rel="" class="current">Untitled Page 2</a></li></ul>
+          </div>
+        </div>
+      </div>
+    </nav><!-- .site-navigation -->
+
+    <header id="masthead" class="site-header" role="banner">
+      <div class="container">
+        <div class="site-branding">
+          <div class="site-title">
+            <a href="https://jiaogulan-tee.eu/"></a>
+          </div>
+
+          <div class="site-logo">
+            <a href="https://jiaogulan-tee.eu/" class="site-logo"><img src="../rw_common/images/logo.webp" width="1024" height="1024" alt="jiaogulan-tee vergleich logo"/></a>
+          </div>
+
+          <div class="site-description">
+            
+          </div>
+        </div><!-- .site-branding -->
+      </div><!-- .container -->
+    </header><!-- .site-header -->
+
+    <div class="container container-main">
+      <div class="row">
+        <main id="content" class="site-content col-xs-12 col-md-9" role="main">
+          <div class="site-content-inner">
+            <!DOCTYPE html><br /><html lang="en"><br /><head><br />    <meta charset="UTF-8"><br />    <meta name="viewport" content="width=device-width, initial-scale=1.0"><br />    <title>RSS Feed Example</title><br />    <style><br />        body {<br />            font-family: Arial, sans-serif;<br />            margin: 20px;<br />        }<br />        .news-item {<br />            margin-bottom: 20px;<br />            padding-bottom: 10px;<br />            border-bottom: 1px solid #ccc;<br />        }<br />        .news-item h3 {<br />            margin: 0;<br />            font-size: 1.2em;<br />        }<br />        .news-item p {<br />            margin: 5px 0;<br />        }<br />    </style><br /></head><br /><body><br />    <h1>Latest News</h1><br />    <div id="rss-feed"></div><br /><br />    <script><br />        document.addEventListener("DOMContentLoaded", function() {<br />            const rssUrl = 'https://feeds.bbci.co.uk/news/rss.xml'; // Use HTTPS to avoid mixed content issues<br />            const rssFeedContainer = document.getElementById('rss-feed');<br /><br />            fetch(rssUrl)<br />                .then(response => response.text())<br />                .then(data => {<br />                    const parser = new DOMParser();<br />                    const xml = parser.parseFromString(data, "application/xml");<br />                    const items = xml.querySelectorAll('item');<br />                    items.forEach(item => {<br />                        const title = item.querySelector('title').textContent;<br />                        const description = item.querySelector('description').textContent;<br />                        const link = item.querySelector('link').textContent;<br />                        const pubDate = item.querySelector('pubDate').textContent;<br /><br />                        const newsItem = document.createElement('div');<br />                        newsItem.classList.add('news-item');<br /><br />                        const newsTitle = document.createElement('h3');<br />                        const newsLink = document.createElement('a');<br />                        newsLink.href = link;<br />                        newsLink.textContent = title;<br />                        newsLink.target = '_blank';<br />                        newsTitle.appendChild(newsLink);<br /><br />                        const newsDescription = document.createElement('p');<br />                        newsDescription.innerHTML = description;<br /><br />                        const newsPubDate = document.createElement('p');<br />                        newsPubDate.textContent = `Published on: ${new Date(pubDate).toLocaleString()}`;<br /><br />                        newsItem.appendChild(newsTitle);<br />                        newsItem.appendChild(newsDescription);<br />                        newsItem.appendChild(newsPubDate);<br /><br />                        rssFeedContainer.appendChild(newsItem);<br />                    });<br />                })<br />                .catch(error => console.error('Error fetching the RSS feed:', error));<br />        });<br />    </script><br /></body><br /></html><br />
+          </div>
+        </main>
+
+        <aside class="site-sidebar col-xs-12 col-md-3">
+          <div class="sidebar">
+            
+          </div>
+
+          <div class="plugin-sidebar">
+            
+          </div>
+        </aside>
+      </div>
+    </div>
+
+    <footer id="footer" class="site-footer" role="contentinfo">
+      <div class="row">
+        <div class="col-xs-12">
+          
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <div class="body-overlay"></div>
+
+  <!-- Javascript includes -->
+  <script src="../rw_common/themes/offroad/javascript.js?rwcache=739980743"></script>
+  <script src="../rw_common/themes/offroad/assets/javascript/background-blur.js?rwcache=739980743"></script>
+		<script src="../rw_common/themes/offroad/assets/javascript/sidebar-right.js?rwcache=739980743"></script>
+		
+  
+</body>
+</html>
