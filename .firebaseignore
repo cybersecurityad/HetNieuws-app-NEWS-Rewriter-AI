@@ -1,0 +1,11 @@
+# Firebase ignore rules
+
+# Ignore all executables
+*.sh
+*.exe
+*.bat
+*.bin
+*.dll
+
+# Ignore node_modules (if applicable)
+node_modules/

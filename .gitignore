@@ -1,4 +1,11 @@
 # Logs
+node_modules/
+dist/
+build/
+.DS_Store
+.env
+*.log
+
 logs
 *.log
 npm-debug.log*
@@ -64,3 +71,4 @@ node_modules/
 
 # dotenv environment variables file
 .env
+node_modules/
