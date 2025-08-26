@@ -3,14 +3,20 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
     
-    // Allow read access to published articles
+    // Allow read access to rewritten articles (new collection)
+    match /HetNieuws_Rewritten/{articleId} {
+      allow read: if true; // Public read access for rewritten articles
+      allow write: if false; // Only server-side writes through Admin SDK
+    }
+    
+    // Allow read access to published articles (old collection)
     match /HetNieuws.RW/{articleId} {
       allow read: if true; // Public read access for published articles
       allow write: if false; // Only server-side writes through Admin SDK
     }
     
     // Raw articles collection - restricted access
-    match /HetNieuws.Raw/{articleId} {
+    match /HetNieuws_Raw/{articleId} {
       allow read: if false; // No public read access to raw articles
       allow write: if false; // Only server-side writes through Admin SDK
     }

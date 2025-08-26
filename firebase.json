@@ -17,6 +17,10 @@
       {
         "source": "/category/**/*.html",
         "destination": "/category/**/*.html"
+      },
+      {
+        "source": "**",
+        "destination": "/index.html"
       }
     ],
     "headers": [

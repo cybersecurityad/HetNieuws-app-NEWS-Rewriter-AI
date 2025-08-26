@@ -1,5 +1,6 @@
 import feedparser
-import pymongo
+import firebase_admin
+from firebase_admin import credentials, firestore
 import os
 import time
 import json
@@ -98,7 +99,7 @@ def display_menu():
     print("5. Toon Artikelen")
     print("6. Geef een overzicht van de RSS kanalen")
     print("7. Extract Artikelen van NU.nl")
-    print("8. Verwerk NU.nl artikelen uit MongoDB")
+    print("8. Verwerk NU.nl artikelen uit Firestore")
     print("9. Exit")
 
 def get_user_choice():
@@ -126,15 +127,21 @@ def show_articles(articles):
         print(f"Body: {article['body'][:200]}...")  # Showing only first 200 characters for brevity
         print("-" * 50)
 
-def save_articles_to_mongodb(articles, collection):
+def save_articles_to_firestore(articles, collection_name, db):
     try:
         if articles:
-            collection.insert_many(articles)
-            print("Artikelen succesvol opgeslagen in MongoDB.")
+            collection_ref = db.collection(collection_name)
+            for article in articles:
+                # Convert datetime to timestamp for Firestore
+                if isinstance(article.get('timestamp'), datetime):
+                    article['timestamp'] = article['timestamp']
+                doc_ref = collection_ref.add(article)
+                print(f"Article saved with ID: {doc_ref[1].id}")
+            print(f"Artikelen succesvol opgeslagen in Firestore collection: {collection_name}")
         else:
             print("Geen artikelen om op te slaan.")
     except Exception as e:
-        print(f"Fout bij het opslaan van artikelen in MongoDB: {e}")
+        print(f"Fout bij het opslaan van artikelen in Firestore: {e}")
 
 def show_rss_feeds():
     print("Overzicht van de RSS kanalen:\n")
@@ -145,26 +152,32 @@ def show_rss_feeds():
         print()
 
 def process_nu_nl_articles(db):
-    raw_collection = db["HetNieuws.Raw"]
-    full_collection = db["HetNieuws.Full"]
+    raw_collection = db.collection("HetNieuws_Raw")
+    full_collection = db.collection("HetNieuws_Full")
     
-    articles = raw_collection.find({"link": {"$regex": "nu.nl"}})
-    for article in articles:
-        link = article["link"]
-        print(f"Processing NU.nl article from {link}")
-        page_source = fetch_article_details_with_selenium(link)
-        full_text = extract_nu_nl_article_body(page_source)
-        full_article = {
-            "title": article["title"],
-            "link": article["link"],
-            "body": full_text,
-            "timestamp": article["timestamp"]
-        }
-        try:
-            full_collection.insert_one(full_article)
-            print(f"Saved full article from {link} to MongoDB.")
-        except pymongo.errors.PyMongoError as e:
-            print(f"Failed to save full article from {link} to MongoDB. Error: {e}")
+    # Get all articles from Firestore and filter for NU.nl articles
+    docs = raw_collection.stream()
+    
+    for doc in docs:
+        article = doc.to_dict()
+        link = article.get("link", "")
+        
+        # Check if the link contains "nu.nl"
+        if "nu.nl" in link:
+            print(f"Processing NU.nl article from {link}")
+            page_source = fetch_article_details_with_selenium(link)
+            full_text = extract_nu_nl_article_body(page_source)
+            full_article = {
+                "title": article["title"],
+                "link": article["link"],
+                "body": full_text,
+                "timestamp": article["timestamp"]
+            }
+            try:
+                full_collection.add(full_article)
+                print(f"Saved full article from {link} to Firestore.")
+            except Exception as e:
+                print(f"Failed to save full article from {link} to Firestore. Error: {e}")
 
 # RSS NL
 RSS_FEEDS = {
@@ -217,16 +230,19 @@ RSS_FEEDS = {
 }
 
 def main():
-    # Use environment variables for configuration
-    mongo_uri = os.getenv('MONGO_URI')
-
+    # Initialize Firebase Admin SDK
     try:
-        client = pymongo.MongoClient(mongo_uri)
-        db = client["HetNieuws-app"]
-        raw_collection = db["HetNieuws.Raw"]
-        print("Successfully connected to MongoDB")
-    except pymongo.errors.ServerSelectionTimeoutError as err:
-        print(f"Error connecting to MongoDB: {err}")
+        # Use service account key file
+        service_account_path = os.getenv('FIREBASE_SERVICE_ACCOUNT_PATH', '../serviceAccountKey.json')
+        
+        if not firebase_admin._apps:
+            cred = credentials.Certificate(service_account_path)
+            firebase_admin.initialize_app(cred)
+        
+        db = firestore.client()
+        print("Successfully connected to Firebase Firestore")
+    except Exception as err:
+        print(f"Error connecting to Firebase: {err}")
         exit(1)
 
     rss_url = None
@@ -253,7 +269,7 @@ def main():
             if rss_url:
                 print(f"Extracting {num_articles} articles from {rss_url}")
                 articles = extract_articles(rss_url, num_articles=num_articles)
-                save_articles_to_mongodb(articles, raw_collection)
+                save_articles_to_firestore(articles, "HetNieuws_Raw", db)
             else:
                 print("Voer eerst een RSS-URL in of kies een categorie.")
         elif choice == '5':
@@ -270,7 +286,7 @@ def main():
                 nu_nl_url = RSS_FEEDS["NU.nl"]["Algemeen nieuws"]
             print(f"Extracting {num_articles} articles from NU.nl category {category or 'Algemeen nieuws'}")
             articles = extract_articles(nu_nl_url, num_articles=num_articles, is_nu_nl=True)
-            save_articles_to_mongodb(articles, raw_collection)
+            save_articles_to_firestore(articles, "HetNieuws_Raw", db)
         elif choice == '8':
             process_nu_nl_articles(db)
         elif choice == '9':

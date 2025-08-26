@@ -1,5 +1,6 @@
 
 
+
 <!DOCTYPE html>
 <html lang="nl">
 <head>
@@ -1788,6 +1789,156 @@ body.dark-mode {
       padding: 0 10px;
     }
   }
+  
+  /* Single Article Styles */
+  .single-article {
+    background: var(--white);
+    border-radius: var(--border-radius);
+    padding: 3rem;
+    margin-bottom: 3rem;
+    box-shadow: var(--box-shadow);
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  .article-header {
+    margin-bottom: 3rem;
+    border-bottom: 1px solid var(--gray-light);
+    padding-bottom: 2rem;
+  }
+  
+  .breadcrumb {
+    font-size: 1.4rem;
+    margin-bottom: 1.5rem;
+    color: var(--text-color-light);
+  }
+  
+  .breadcrumb a {
+    color: var(--primary-color);
+    text-decoration: none;
+  }
+  
+  .breadcrumb a:hover {
+    text-decoration: underline;
+  }
+  
+  .single-article h1 {
+    font-size: 3.2rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    line-height: 1.2;
+    margin-bottom: 2rem;
+  }
+  
+  .article-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+    align-items: center;
+    font-size: 1.4rem;
+    color: var(--text-color-light);
+  }
+  
+  .article-meta > div {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  
+  .article-meta i {
+    color: var(--primary-color);
+  }
+  
+  .article-image-container {
+    margin: 3rem 0;
+    text-align: center;
+  }
+  
+  .single-article .article-image {
+    max-width: 100%;
+    height: auto;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+  }
+  
+  .article-content {
+    font-size: 1.8rem;
+    line-height: 1.7;
+    color: var(--text-color);
+    margin: 3rem 0;
+  }
+  
+  .article-content p {
+    margin-bottom: 2rem;
+  }
+  
+  .article-actions {
+    display: flex;
+    gap: 1.5rem;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--gray-light);
+  }
+  
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.8rem;
+    padding: 1.2rem 2rem;
+    border: none;
+    border-radius: var(--border-radius);
+    font-size: 1.6rem;
+    font-weight: 500;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+  }
+  
+  .btn-primary {
+    background-color: var(--primary-color);
+    color: var(--white);
+  }
+  
+  .btn-primary:hover {
+    background-color: var(--primary-color-dark);
+    transform: translateY(-2px);
+  }
+  
+  .btn-secondary {
+    background-color: var(--gray-light);
+    color: var(--text-color);
+  }
+  
+  .btn-secondary:hover {
+    background-color: var(--gray);
+    transform: translateY(-2px);
+  }
+  
+  @media (max-width: 768px) {
+    .single-article {
+      padding: 2rem;
+      margin: 1rem;
+    }
+    
+    .single-article h1 {
+      font-size: 2.4rem;
+    }
+    
+    .article-meta {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+    
+    .article-content {
+      font-size: 1.6rem;
+    }
+    
+    .article-actions {
+      flex-direction: column;
+    }
+  }
 </style>
 
 <script>
@@ -1848,7 +1999,7 @@ body.dark-mode {
           item.addEventListener('click', function() {
             const slug = this.getAttribute('data-slug');
             if (slug) {
-              window.location.href = `/article/${slug}`;
+              window.location.href = `/${slug}`;
             }
           });
         });
@@ -1859,10 +2010,26 @@ body.dark-mode {
     function createSafeSlug(title) {
       if (!title) return 'artikel';
       try {
+        // Dutch character mapping for better URLs
+        const dutchCharMap = {
+          'ë': 'e', 'ï': 'i', 'ü': 'u', 'ö': 'o', 'ä': 'a',
+          'é': 'e', 'í': 'i', 'ú': 'u', 'ó': 'o', 'á': 'a',
+          'è': 'e', 'ì': 'i', 'ù': 'u', 'ò': 'o', 'à': 'a',
+          'ê': 'e', 'î': 'i', 'û': 'u', 'ô': 'o', 'â': 'a',
+          'ç': 'c', 'ñ': 'n', 'ý': 'y', 'ÿ': 'y'
+        };
+        
         return title.toLowerCase()
+          // Replace Dutch special characters
+          .replace(/[ëïüöäéíúóáèìùòàêîûôâçñýÿ]/g, char => dutchCharMap[char] || char)
+          // Remove other special characters but keep letters, numbers, spaces, and hyphens
           .replace(/[^\w\s-]/g, '')
+          // Replace spaces with hyphens
           .replace(/\s+/g, '-')
-          .replace(/-+/g, '-');
+          // Remove multiple consecutive hyphens
+          .replace(/-+/g, '-')
+          // Remove leading/trailing hyphens
+          .replace(/^-+|-+$/g, '');
       } catch (e) {
         console.error("Error creating slug:", e);
         return 'artikel';
@@ -2171,7 +2338,7 @@ body.dark-mode {
 
   // Import the necessary Firebase modules
   import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js';
-  import { getDatabase, ref, get, onValue } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js';
+  import { getFirestore, collection, getDocs, onSnapshot, query, orderBy } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
   import { getAnalytics, logEvent } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics.js';
   
   // Firebase configuration - make sure this matches your Firebase project
@@ -2190,7 +2357,7 @@ body.dark-mode {
   try {
       // Initialize Firebase
       const app = initializeApp(firebaseConfig);
-      const db = getDatabase(app);
+      const db = getFirestore(app);
       const analytics = getAnalytics(app);
       
       console.log("Firebase initialized successfully");
@@ -2232,10 +2399,26 @@ body.dark-mode {
       function createSafeSlug(title) {
           if (!title) return 'artikel';
           try {
+              // Dutch character mapping for better URLs
+              const dutchCharMap = {
+                  'ë': 'e', 'ï': 'i', 'ü': 'u', 'ö': 'o', 'ä': 'a',
+                  'é': 'e', 'í': 'i', 'ú': 'u', 'ó': 'o', 'á': 'a',
+                  'è': 'e', 'ì': 'i', 'ù': 'u', 'ò': 'o', 'à': 'a',
+                  'ê': 'e', 'î': 'i', 'û': 'u', 'ô': 'o', 'â': 'a',
+                  'ç': 'c', 'ñ': 'n', 'ý': 'y', 'ÿ': 'y'
+              };
+              
               return title.toLowerCase()
+                  // Replace Dutch special characters
+                  .replace(/[ëïüöäéíúóáèìùòàêîûôâçñýÿ]/g, char => dutchCharMap[char] || char)
+                  // Remove other special characters but keep letters, numbers, spaces, and hyphens
                   .replace(/[^\w\s-]/g, '')
+                  // Replace spaces with hyphens
                   .replace(/\s+/g, '-')
-                  .replace(/-+/g, '-');
+                  // Remove multiple consecutive hyphens
+                  .replace(/-+/g, '-')
+                  // Remove leading/trailing hyphens
+                  .replace(/^-+|-+$/g, '');
           } catch (e) {
               console.error("Error creating slug:", e);
               return 'artikel';
@@ -2273,12 +2456,25 @@ body.dark-mode {
       function formatDutchDate(timestamp) {
           if (!timestamp) return '';
           
-          // Convert timestamp to milliseconds if it's in seconds
-          const milliseconds = timestamp < 10000000000 
-              ? timestamp * 1000 
-              : timestamp;
-              
-          const date = new Date(milliseconds);
+          let date;
+          
+          // Handle different timestamp formats
+          if (typeof timestamp === 'string') {
+              // Handle string dates like '2025-08-26 14:30:00'
+              date = new Date(timestamp);
+          } else {
+              // Handle numeric timestamps
+              const milliseconds = timestamp < 10000000000 
+                  ? timestamp * 1000 
+                  : timestamp;
+              date = new Date(milliseconds);
+          }
+          
+          // Check if date is valid
+          if (isNaN(date.getTime())) {
+              console.warn('Invalid date:', timestamp);
+              return 'Datum onbekend';
+          }
           
           // Dutch month names
           const dutchMonths = [
@@ -2401,78 +2597,43 @@ body.dark-mode {
       try {
           console.log("Loading categories and tags...");
           
-          // Load categories
-          const categoriesRef = ref(db, 'categories');
-          const categoriesSnapshot = await get(categoriesRef);
+          // Since we're now using Firestore and the rewritten articles have categories,
+          // we'll generate categories dynamically from the articles
+          // This is more flexible and ensures categories match the actual content
           
-          if (categoriesSnapshot.exists()) {
-              categories = categoriesSnapshot.val();
-              console.log("Categories loaded:", Object.keys(categories).length);
-              
-              // Update category navigation
-              updateCategoryNavigation();
-          } else {
-              console.log("No categories found in database");
-          }
+          // For now, set up some default Dutch categories
+          categories = {
+              'politiek': { name: 'Politiek' },
+              'economie': { name: 'Economie' },
+              'sport': { name: 'Sport' },
+              'gezondheid': { name: 'Gezondheid' },
+              'technologie': { name: 'Technologie' },
+              'cultuur': { name: 'Cultuur' },
+              'onderwijs': { name: 'Onderwijs' },
+              'milieu': { name: 'Milieu' },
+              'internationaal': { name: 'Internationaal' },
+              'nieuws': { name: 'Nieuws' }
+          };
           
-          // Load tags
-          const tagsRef = ref(db, 'tags');
-          const tagsSnapshot = await get(tagsRef);
+          // Set up some default Dutch tags
+          tags = {
+              'nederland': { name: 'Nederland' },
+              'europa': { name: 'Europa' },
+              'regering': { name: 'Regering' },
+              'verkiezingen': { name: 'Verkiezingen' },
+              'klimaat': { name: 'Klimaat' },
+              'zorg': { name: 'Zorg' },
+              'onderwijs': { name: 'Onderwijs' },
+              'economie': { name: 'Economie' }
+          };
           
-          if (tagsSnapshot.exists()) {
-              tags = tagsSnapshot.val();
-              console.log("Tags loaded:", Object.keys(tags).length);
-              
-              // Update tag widgets
-              updateTagWidgets();
-          } else {
-              console.log("No tags found in database");
-          }
+          console.log("Categories and tags initialized");
           
-          // Load tag statistics
-          const tagStatsRef = ref(db, 'statistics/tags');
-          const tagStatsSnapshot = await get(tagStatsRef);
+          // Update category navigation
+          updateCategoryNavigation();
           
-          if (tagStatsSnapshot.exists()) {
-              const tagStats = tagStatsSnapshot.val();
-              
-              // Add counts to tags
-              for (const tagSlug in tags) {
-                  const tagName = tags[tagSlug].name;
-                  if (tagStats[tagName]) {
-                      tags[tagSlug].count = tagStats[tagName];
-                  }
-              }
-              
-              // Update tag widgets with counts
-              updateTagWidgets();
-          }
-          
-          // Listen for real-time updates to categories
-          onValue(categoriesRef, (snapshot) => {
-              if (snapshot.exists()) {
-                  const updatedCategories = snapshot.val();
-                  // Only update if there are actual changes
-                  if (JSON.stringify(categories) !== JSON.stringify(updatedCategories)) {
-                      categories = updatedCategories;
-                      updateCategoryNavigation();
-                      // Clear category cache when categories update
-                      categoryCache = {};
-                  }
-              }
-          });
-          
-          // Listen for real-time updates to tags
-          onValue(tagsRef, (snapshot) => {
-              if (snapshot.exists()) {
-                  const updatedTags = snapshot.val();
-                  // Only update if there are actual changes
-                  if (JSON.stringify(tags) !== JSON.stringify(updatedTags)) {
-                      tags = updatedTags;
-                      updateTagWidgets();
-                  }
-              }
-          });
+          // Update tag widgets  
+          updateTagWidgets();
           
       } catch (error) {
           console.error('Error loading categories and tags:', error);
@@ -2701,7 +2862,7 @@ body.dark-mode {
       
       if (category === 'all') {
           filteredArticles = [...allArticles];
-          pageSubtitle.textContent = 'Laatste Nieuws uit Nederland in 10 Talen';
+          pageSubtitle.textContent = 'Laatste Nieuws uit Nederland';
       } else {
           // Use cached results if available
           if (categoryCache[category]) {
@@ -2712,9 +2873,11 @@ body.dark-mode {
               pageSubtitle.textContent = categoryName;
               
               // Filter articles and cache the result
+              // The rewritten articles have a single 'category' field, not an array
               filteredArticles = allArticles.filter(article => {
-                  if (!article.categories) return false;
-                  return article.categories.includes(categoryName);
+                  if (!article.category) return false;
+                  // Check if the article's category matches (case insensitive)
+                  return article.category.toLowerCase() === categoryName.toLowerCase();
               });
               
               // Store in cache
@@ -2743,9 +2906,11 @@ body.dark-mode {
       const tagName = tags[tagSlug]?.name || tagSlug;
       pageSubtitle.textContent = `Tag: ${tagName}`;
       
+      // The rewritten articles have tags as an array
       filteredArticles = allArticles.filter(article => {
-          if (!article.tags) return false;
-          return article.tags.includes(tagName);
+          if (!article.tags || !Array.isArray(article.tags)) return false;
+          // Check if any of the article's tags match the selected tag
+          return article.tags.some(tag => tag.toLowerCase().includes(tagName.toLowerCase()));
       });
       
       // Update category filters to show "all" as active
@@ -2781,8 +2946,8 @@ body.dark-mode {
           } else {
               const categoryName = categories[currentCategory]?.name || currentCategory;
               baseArticles = allArticles.filter(article => {
-                  if (!article.categories) return false;
-                  return article.categories.includes(categoryName);
+                  if (!article.category) return false;
+                  return article.category.toLowerCase() === categoryName.toLowerCase();
               });
               // Store in cache
               categoryCache[currentCategory] = baseArticles;
@@ -2792,27 +2957,18 @@ body.dark-mode {
       // Then apply search filter
       filteredArticles = baseArticles.filter(article => {
           const title = article.title?.toLowerCase() || '';
-          const content = article.content?.toLowerCase() || '';
-          const preview = article.preview?.toLowerCase() || '';
+          const content = article.content?.toLowerCase() || article.full_text?.toLowerCase() || '';
+          const preview = article.preview?.toLowerCase() || article.summary?.toLowerCase() || '';
           
-          // Check SEO keywords if available
-          let keywordsMatch = false;
-          if (article.seo && article.seo.keywords) {
-              keywordsMatch = article.seo.keywords.some(keyword => 
-                  keyword.toLowerCase().includes(query)
-              );
+          // Check category (single field in rewritten articles)
+          let categoryMatch = false;
+          if (article.category) {
+              categoryMatch = article.category.toLowerCase().includes(query);
           }
           
-          // Check categories and tags
-          let categoriesMatch = false;
-          if (article.categories) {
-              categoriesMatch = article.categories.some(category => 
-                  category.toLowerCase().includes(query)
-              );
-          }
-          
+          // Check tags (array in rewritten articles)
           let tagsMatch = false;
-          if (article.tags) {
+          if (article.tags && Array.isArray(article.tags)) {
               tagsMatch = article.tags.some(tag => 
                   tag.toLowerCase().includes(query)
               );
@@ -2821,8 +2977,7 @@ body.dark-mode {
           return title.includes(query) || 
                  content.includes(query) || 
                  preview.includes(query) ||
-                 keywordsMatch ||
-                 categoriesMatch ||
+                 categoryMatch ||
                  tagsMatch;
       });
       
@@ -2995,19 +3150,17 @@ body.dark-mode {
           
           // Categories HTML
           let categoriesHtml = '';
-          if (article.categories && article.categories.length > 0) {
+          if (article.category) {
               categoriesHtml = `
               <div class="article-categories">
-                  ${article.categories.map(category => 
-                      `<button class="article-category" type="button">${category}</button>`
-                  ).join('')}
+                  <button class="article-category" type="button">${article.category}</button>
               </div>
               `;
           }
           
           // Tags HTML
           let tagsHtml = '';
-          if (article.tags && article.tags.length > 0) {
+          if (article.tags && Array.isArray(article.tags) && article.tags.length > 0) {
               tagsHtml = `
               <div class="article-tags">
                   ${article.tags.map(tag => 
@@ -3050,23 +3203,23 @@ body.dark-mode {
           // Share buttons
           const shareButtons = `
           <div class="share-buttons">
-              <a href="https://www.facebook.com/sharer/sharer.php?u=${safeEncodeURI(`https://hetnieuws.app/article/${articleSlug}`)}" 
+              <a href="https://www.facebook.com/sharer/sharer.php?u=${safeEncodeURI(`https://hetnieuws.app/${articleSlug}`)}" 
                   target="_blank" rel="noopener noreferrer nofollow" class="share-btn facebook-share" aria-label="Deel op Facebook">
                   <i class="fab fa-facebook-f" aria-hidden="true"></i> Delen
               </a>
-              <a href="https://twitter.com/intent/tweet?text=${safeEncodeURI(cleanTitle)}&url=${safeEncodeURI(`https://hetnieuws.app/article/${articleSlug}`)}" 
+              <a href="https://twitter.com/intent/tweet?text=${safeEncodeURI(cleanTitle)}&url=${safeEncodeURI(`https://hetnieuws.app/${articleSlug}`)}" 
                   target="_blank" rel="noopener noreferrer nofollow" class="share-btn twitter-share" aria-label="Deel op Twitter">
                   <i class="fab fa-twitter" aria-hidden="true"></i> Tweet
               </a>
-              <a href="https://wa.me/?text=${safeEncodeURI(`${cleanTitle} https://hetnieuws.app/article/${articleSlug}`)}" 
+              <a href="https://wa.me/?text=${safeEncodeURI(`${cleanTitle} https://hetnieuws.app/${articleSlug}`)}" 
                   target="_blank" rel="noopener noreferrer nofollow" class="share-btn whatsapp-share" aria-label="Deel via WhatsApp">
                   <i class="fab fa-whatsapp" aria-hidden="true"></i> WhatsApp
               </a>
-              <a href="https://www.linkedin.com/shareArticle?mini=true&url=${safeEncodeURI(`https://hetnieuws.app/article/${articleSlug}`)}&title=${safeEncodeURI(cleanTitle)}" 
+              <a href="https://www.linkedin.com/shareArticle?mini=true&url=${safeEncodeURI(`https://hetnieuws.app/${articleSlug}`)}&title=${safeEncodeURI(cleanTitle)}" 
                   target="_blank" rel="noopener noreferrer nofollow" class="share-btn linkedin-share" aria-label="Deel op LinkedIn">
                   <i class="fab fa-linkedin-in" aria-hidden="true"></i> LinkedIn
               </a>
-              <a href="mailto:?subject=${safeEncodeURI(cleanTitle)}&body=${safeEncodeURI(`${cleanTitle}\n\nhttps://hetnieuws.app/article/${articleSlug}`)}" 
+              <a href="mailto:?subject=${safeEncodeURI(cleanTitle)}&body=${safeEncodeURI(`${cleanTitle}\n\nhttps://hetnieuws.app/${articleSlug}`)}" 
                   class="share-btn email-share" aria-label="Deel via e-mail">
                   <i class="far fa-envelope" aria-hidden="true"></i> E-mail
               </a>
@@ -3080,8 +3233,8 @@ body.dark-mode {
               "headline": cleanTitle,
               "description": cleanPreview,
               "image": article.image_url ? [article.image_url] : [],
-              "datePublished": article.timestamp ? new Date(article.timestamp * 1000).toISOString() : new Date().toISOString(),
-              "dateModified": article.updated ? new Date(article.updated * 1000).toISOString() : new Date().toISOString(),
+              "datePublished": article.timestamp ? (typeof article.timestamp === 'string' ? new Date(article.timestamp).toISOString() : new Date(article.timestamp * 1000).toISOString()) : new Date().toISOString(),
+              "dateModified": article.updated ? (typeof article.updated === 'string' ? new Date(article.updated).toISOString() : new Date(article.updated * 1000).toISOString()) : new Date().toISOString(),
                     "author": {
                         "@type": "Organization",
                         "name": "HetNieuws.app",
@@ -3097,7 +3250,7 @@ body.dark-mode {
                     },
                     "mainEntityOfPage": {
                         "@type": "WebPage",
-                        "@id": `https://hetnieuws.app/article/${articleSlug}`
+                        "@id": `https://hetnieuws.app/${articleSlug}`
                     }
                 };
                 
@@ -3110,11 +3263,11 @@ body.dark-mode {
                 ${imageHtml}
                 <div class="article-content">
                     ${categoriesHtml}
-                    <h2 id="article-title-${index}"><a href="/article/${articleSlug}" class="article-title-link">${cleanTitle}</a></h2>
+                    <h2 id="article-title-${index}"><a href="/${articleSlug}" class="article-title-link">${cleanTitle}</a></h2>
                     ${metaInfo}
                     <h3>${cleanPreview}</h3>
                     <div class="article-actions">
-                        <a href="/article/${articleSlug}" class="read-more">Lees meer</a>
+                        <a href="/${articleSlug}" class="read-more">Lees meer</a>
                         ${tagsHtml}
                     </div>
                     ${shareButtons}
@@ -3138,7 +3291,7 @@ body.dark-mode {
                     // Find the category slug from the name
                     let categorySlug = 'all';
                     for (const slug in categories) {
-                        if (categories[slug].name === categoryName) {
+                        if (categories[slug].name.toLowerCase() === categoryName.toLowerCase()) {
                             categorySlug = slug;
                             break;
                         }
@@ -3169,10 +3322,17 @@ body.dark-mode {
                     // Find the tag slug from the name
                     let tagSlug = '';
                     for (const slug in tags) {
-                        if (tags[slug].name === tagName) {
+                        if (tags[slug].name.toLowerCase() === tagName.toLowerCase()) {
                             tagSlug = slug;
                             break;
                         }
+                    }
+                    
+                    // If no exact match found, create a slug from the tag name
+                    if (!tagSlug) {
+                        tagSlug = tagName.toLowerCase().replace(/[^a-z0-9]/g, '-');
+                        // Add to tags object for future reference
+                        tags[tagSlug] = { name: tagName };
                     }
                     
                     if (tagSlug) {
@@ -3218,7 +3378,7 @@ body.dark-mode {
                             content_id: articleSlug
                         });
                         
-                        window.location.href = `/article/${articleSlug}`;
+                        window.location.href = `/${articleSlug}`;
                     });
                     
                     // Add keyboard accessibility
@@ -3278,7 +3438,7 @@ body.dark-mode {
       `<img src="${article.image_url}" alt="${cleanTitle}" loading="lazy" width="80" height="80">` : 
       ''}
       <div class="recent-post-content">
-        <h3><a href="/article/${articleSlug}" id="recent-post-${index}">${cleanTitle}</a></h3>
+        <h3><a href="/${articleSlug}" id="recent-post-${index}">${cleanTitle}</a></h3>
             </div>
     `;
     recentPostsList.appendChild(li);
@@ -3417,42 +3577,123 @@ body.dark-mode {
             }
         }
         
+        // Function to check if current URL is a slug and handle routing
+        function handleSlugRouting() {
+            const path = window.location.pathname;
+            const slug = path.substring(1); // Remove leading slash
+            
+            // Check if this looks like a slug (not empty, not a known page)
+            if (slug && slug !== '' && slug !== 'categories' && slug !== 'search' && slug !== 'contact' && slug !== 'about') {
+                return slug;
+            }
+            return null;
+        }
+        
+        // Function to display single article based on slug
+        function displaySingleArticle(slug) {
+            if (!allArticles || allArticles.length === 0) return false;
+            
+            const article = allArticles.find(a => a.slug === slug);
+            if (!article) return false;
+            
+            // Update page title
+            document.title = `${article.title} - HetNieuws.app`;
+            
+            // Clear the articles container and show single article
+            const articlesContainer = document.getElementById('articles-container');
+            const singleArticleHTML = createSingleArticleHTML(article);
+            articlesContainer.innerHTML = singleArticleHTML;
+            
+            // Hide pagination for single article view
+            const pagination = document.getElementById('pagination');
+            if (pagination) pagination.style.display = 'none';
+            
+            return true;
+        }
+        
+        // Function to create single article HTML
+        function createSingleArticleHTML(article) {
+            const cleanTitle = cleanArticleTitle(article.title);
+            const cleanPreview = cleanArticleTitle(article.preview || article.summary || '');
+            const cleanContent = cleanArticleTitle(article.content || article.full_text || '');
+            const displayDate = article.displayDate || formatDutchDate(article.timestamp);
+            const readingTime = estimateReadingTime(cleanContent);
+            
+            return `
+                <article class="single-article" tabindex="0" role="article" aria-labelledby="single-article-title">
+                    <div class="article-header">
+                        <nav class="breadcrumb">
+                            <a href="/">Home</a> / <span>${cleanTitle}</span>
+                        </nav>
+                        <h1 id="single-article-title">${cleanTitle}</h1>
+                        <div class="article-meta">
+                            <div class="article-date">
+                                <i class="fas fa-calendar-alt" aria-hidden="true"></i>
+                                <time datetime="${article.timestamp}">${displayDate}</time>
+                            </div>
+                            <div class="reading-time">
+                                <i class="fas fa-clock" aria-hidden="true"></i>
+                                <span>${readingTime} leestijd</span>
+                            </div>
+                            ${article.category ? `<div class="article-categories">
+                                <span class="article-category">${article.category}</span>
+                            </div>` : ''}
+                        </div>
+                    </div>
+                    
+                    ${article.image_url ? `<div class="article-image-container">
+                        <img src="${article.image_url}" alt="${cleanTitle}" class="article-image" loading="lazy">
+                    </div>` : ''}
+                    
+                    <div class="article-content">
+                        ${cleanContent.split('\\n').map(paragraph => paragraph.trim() ? `<p>${paragraph}</p>` : '').join('')}
+                    </div>
+                    
+                    ${article.tags && Array.isArray(article.tags) && article.tags.length > 0 ? `
+                    <div class="article-tags">
+                        ${article.tags.map(tag => `<span class="article-tag">${typeof tag === 'string' ? tag : ''}</span>`).join('')}
+                    </div>` : ''}
+                    
+                    <div class="article-actions">
+                        <button onclick="window.history.back()" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left"></i> Terug
+                        </button>
+                        <button onclick="window.location.href='/'" class="btn btn-primary">
+                            <i class="fas fa-home"></i> Home
+                        </button>
+                    </div>
+                </article>
+            `;
+        }
+
         // Main function to load articles
         async function loadArticles() {
             try {
                 // Show loading indicator
                 if (loading) loading.style.display = 'block';
-                console.log("Loading articles...");
+                console.log("Loading articles from Firestore...");
                 
                 // Load categories and tags first
                 await loadCategoriesAndTags();
                 
-                // Load all articles
-                const articlesRef = ref(db, 'articles');
+                // Load all articles from HetNieuws_Rewritten collection
+                const articlesRef = collection(db, 'HetNieuws_Rewritten');
+                const articlesQuery = query(articlesRef, orderBy('timestamp', 'desc'));
                 
-                // Use once for initial load
-                const snapshot = await get(articlesRef);
+                // Use getDocs for initial load
+                const snapshot = await getDocs(articlesQuery);
                 
-                if (snapshot.exists()) {
-                    console.log("Articles data retrieved from Firebase");
-                    const articlesData = snapshot.val();
+                if (!snapshot.empty) {
+                    console.log("Rewritten articles data retrieved from Firestore");
                     
-                    allArticles = Object.values(articlesData)
-                        .sort((a, b) => {
-                            // Check if timestamp exists
-                            if (!a.timestamp && !b.timestamp) return 0;
-                            if (!a.timestamp) return 1;
-                            if (!b.timestamp) return -1;
-                            
-                            // Convert to absolute values if they're negative
-                            const timestampA = Math.abs(a.timestamp);
-                            const timestampB = Math.abs(b.timestamp);
-                            
-                            // Sort in descending order (newest first)
-                            return timestampB - timestampA;
-                        });
+                    allArticles = [];
+                    snapshot.forEach((doc) => {
+                        const articleData = doc.data();
+                        articleData.id = doc.id;
+                        allArticles.push(articleData);
+                    });
                         
-                    console.log(`Loaded ${allArticles.length} articles`);
+                    console.log(`Loaded ${allArticles.length} rewritten articles`);
                     
                     // Process articles for display
                     allArticles = allArticles.map(article => {
@@ -3467,8 +3708,32 @@ body.dark-mode {
                             article.slug = createSafeSlug(cleanTitle);
                         }
                         
+                        // Ensure content field is mapped correctly
+                        if (!article.content && article.full_text) {
+                            article.content = article.full_text;
+                        }
+                        
+                        // Ensure preview field is mapped correctly  
+                        if (!article.preview && article.summary) {
+                            article.preview = article.summary;
+                        }
+                        
                         return article;
                     });
+                    
+                    // Check if current URL is a slug route
+                    const currentSlug = handleSlugRouting();
+                    if (currentSlug) {
+                        // Try to display single article
+                        if (displaySingleArticle(currentSlug)) {
+                            // Successfully displayed single article
+                            return;
+                        } else {
+                            // Slug not found, redirect to home
+                            console.log(`Article with slug "${currentSlug}" not found, redirecting to home`);
+                            window.history.pushState({}, '', '/');
+                        }
+                    }
                     
                     // Apply initial filters from URL parameters
                     if (currentCategory !== 'all') {
@@ -3490,66 +3755,71 @@ body.dark-mode {
                     initializeArticleTracking();
                     
                     // Listen for real-time updates to articles
-                    onValue(articlesRef, (snapshot) => {
-                        if (snapshot.exists()) {
-                            const newArticlesData = snapshot.val();
-                            const newArticles = Object.values(newArticlesData)
-                                .sort((a, b) => {
-                                    // Sort by timestamp descending
-                                    if (!a.timestamp && !b.timestamp) return 0;
-                                    if (!a.timestamp) return 1;
-                                    if (!b.timestamp) return -1;
-                                    return Math.abs(b.timestamp) - Math.abs(a.timestamp);
-                                });
+                    onSnapshot(articlesQuery, (snapshot) => {
+                        const newArticles = [];
+                        snapshot.forEach((doc) => {
+                            const articleData = doc.data();
+                            articleData.id = doc.id;
+                            newArticles.push(articleData);
+                        });
                                 
-                            // Check if articles have changed
-                            if (JSON.stringify(newArticles) !== JSON.stringify(allArticles)) {
-                                console.log("Articles updated in real-time");
-                                
-                                // Process articles for display
-                                allArticles = newArticles.map(article => {
-                                    // Add displayDate if not already present
-                                    if (!article.displayDate) {
-                                        article.displayDate = formatDutchDate(article.timestamp);
-                                    }
-                                    
-                                    // Generate slug if not present
-                                    if (!article.slug) {
-                                        const cleanTitle = cleanArticleTitle(article.title);
-                                        article.slug = createSafeSlug(cleanTitle);
-                                    }
-                                    
-                                    return article;
-                                });
-                                
-                                // Clear category cache
-                                categoryCache = {};
-                                
-                                // Reapply current filters
-                                if (currentCategory !== 'all') {
-                                    filterArticlesByCategory(currentCategory);
-                                } else if (currentTag) {
-                                    filterArticlesByTag(currentTag);
-                                } else if (searchQuery) {
-                                    filteredArticles = [...allArticles];
-                                    applySearchFilter();
-                                } else {
-                                    filteredArticles = [...allArticles];
-                                    displayArticles();
+                        // Check if articles have changed
+                        if (JSON.stringify(newArticles) !== JSON.stringify(allArticles)) {
+                            console.log("Rewritten articles updated in real-time");
+                            
+                            // Process articles for display
+                            allArticles = newArticles.map(article => {
+                                // Add displayDate if not already present
+                                if (!article.displayDate) {
+                                    article.displayDate = formatDutchDate(article.timestamp);
                                 }
                                 
-                                // Update recent posts sidebar
-                                updateRecentPosts();
+                                // Generate slug if not present
+                                if (!article.slug) {
+                                    const cleanTitle = cleanArticleTitle(article.title);
+                                    article.slug = createSafeSlug(cleanTitle);
+                                }
+                                
+                                // Ensure content field is mapped correctly
+                                if (!article.content && article.full_text) {
+                                    article.content = article.full_text;
+                                }
+                                
+                                // Ensure preview field is mapped correctly  
+                                if (!article.preview && article.summary) {
+                                    article.preview = article.summary;
+                                }
+                                
+                                return article;
+                            });
+                            
+                            // Clear category cache
+                            categoryCache = {};
+                            
+                            // Reapply current filters
+                            if (currentCategory !== 'all') {
+                                filterArticlesByCategory(currentCategory);
+                            } else if (currentTag) {
+                                filterArticlesByTag(currentTag);
+                            } else if (searchQuery) {
+                                filteredArticles = [...allArticles];
+                                applySearchFilter();
+                            } else {
+                                filteredArticles = [...allArticles];
+                                displayArticles();
                             }
+                            
+                            // Update recent posts sidebar
+                            updateRecentPosts();
                         }
                     });
                     
                 } else {
-                    console.log("No articles found in database");
+                    console.log("No rewritten articles found in Firestore");
                     articlesContainer.innerHTML = `
                     <div class="article" tabindex="0" role="article">
                         <h2>Geen artikelen gevonden</h2>
-                        <p>Er zijn momenteel geen artikelen beschikbaar. Kom later terug voor het laatste nieuws.</p>
+                        <p>Er zijn momenteel geen gerewritede artikelen beschikbaar. Kom later terug voor het laatste nieuws.</p>
                     </div>`;
                 }
                 
