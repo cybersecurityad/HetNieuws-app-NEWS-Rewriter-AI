@@ -623,7 +623,7 @@ def create_single_article_html(article_data, base_dir):
     <script>
         async function loadBlogs() {{
             try {{
-                const response = await fetch('https://new-rwn-b2146665501d.herokuapp.com/get-blogs');
+                const response = await fetch('https://hetnieuws-app-0261cbb24d44.herokuapp.com/get-blogs');
                 const blogs = await response.json();
                 const recentPostsList = document.getElementById('recent-posts-list');
                 const tagsList = document.getElementById('tag-sidebar').querySelector('ul');

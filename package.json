@@ -1,10 +1,46 @@
 {
-    "name": "hetnieuws-app",
+    "name": "hetnieuws-app-news-rewriter-ai",
     "version": "1.0.0",
-    "description": "HetNieuws app running with Node.js and MongoDB",
-    "main": "server.js",
+    "description": "Advanced AI-Powered Dutch News Aggregation & Content Rewriting Platform with OpenAI, Firebase, and Node.js",
+    "main": "server-firebase.js",
+    "keywords": [
+        "news",
+        "dutch",
+        "netherlands",
+        "ai",
+        "openai",
+        "content-rewriting",
+        "news-aggregation",
+        "firebase",
+        "nodejs",
+        "express",
+        "python",
+        "web-scraping",
+        "seo",
+        "responsive-design",
+        "bootstrap",
+        "firestore",
+        "news-platform",
+        "content-management",
+        "automated-content",
+        "nlp",
+        "natural-language-processing"
+    ],
+    "homepage": "https://hetnieuws.app",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/cybersecurityad/HetNieuws-app-NEWS-Rewriter-AI.git"
+    },
+    "bugs": {
+        "url": "https://github.com/cybersecurityad/HetNieuws-app-NEWS-Rewriter-AI/issues"
+    },
     "scripts": {
-        "start": "node server.js"
+        "start": "node server-firebase.js",
+        "dev": "node server-firebase.js",
+        "deploy": "firebase deploy",
+        "build": "npm install && python -m pip install -r requirements.txt",
+        "test": "echo \"No tests specified\" && exit 0",
+        "lint": "echo \"No linting configured\" && exit 0"
     },
     "dependencies": {
         "cors": "^2.8.5",
@@ -13,8 +49,24 @@
         "firebase-admin": "^12.0.0"
     },
     "engines": {
-        "node": ">=14.x"
+        "node": ">=14.x",
+        "npm": ">=6.x"
     },
-    "author": "",
-    "license": "ISC"
+    "author": {
+        "name": "HetNieuws.app Team",
+        "email": "info@hetnieuws.app",
+        "url": "https://hetnieuws.app"
+    },
+    "license": "MIT",
+    "private": false,
+    "funding": {
+        "type": "github",
+        "url": "https://github.com/sponsors/cybersecurityad"
+    },
+    "contributors": [
+        {
+            "name": "HetNieuws.app Development Team",
+            "email": "dev@hetnieuws.app"
+        }
+    ]
 }

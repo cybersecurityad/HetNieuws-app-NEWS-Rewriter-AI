@@ -1,10 +1,35 @@
-# HetNieuws.app - NEWS Rewriter AI
+# HetNieuws.app - AI-Powered Dutch News Rewriter & Aggregation Platform
+
+[![GitHub stars](https://img.shields.io/github/stars/cybersecurityad/HetNieuws-app-NEWS-Rewriter-AI?style=flat-square)](https://github.com/cybersecurityad/HetNieuws-app-NEWS-Rewriter-AI/stargazers)
+[![GitHub forks](https://img.shields.io/github/forks/cybersecurityad/HetNieuws-app-NEWS-Rewriter-AI?style=flat-square)](https://github.com/cybersecurityad/HetNieuws-app-NEWS-Rewriter-AI/network)
+[![GitHub issues](https://img.shields.io/github/issues/cybersecurityad/HetNieuws-app-NEWS-Rewriter-AI?style=flat-square)](https://github.com/cybersecurityad/HetNieuws-app-NEWS-Rewriter-AI/issues)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](https://opensource.org/licenses/MIT)
+[![Firebase](https://img.shields.io/badge/Firebase-FFCA28?style=flat-square&logo=firebase&logoColor=black)](https://firebase.google.com/)
+[![OpenAI](https://img.shields.io/badge/OpenAI-412991?style=flat-square&logo=openai&logoColor=white)](https://openai.com/)
+[![Node.js](https://img.shields.io/badge/Node.js-339933?style=flat-square&logo=node.js&logoColor=white)](https://nodejs.org/)
+[![Python](https://img.shields.io/badge/Python-3776AB?style=flat-square&logo=python&logoColor=white)](https://python.org/)
 
 🚀 **Advanced AI-Powered Dutch News Aggregation & Content Rewriting Platform**
 
+> Transform global news into localized Dutch content using cutting-edge AI technology, Firebase infrastructure, and modern web development practices.
+
+## 🌟 Live Demo
+
+🌐 **Website**: [hetnieuws.app](https://hetnieuws.app)  
+📱 **Mobile Optimized**: Responsive design for all devices  
+⚡ **Performance**: Fast loading with Firebase CDN  
+
 ## 📖 Overview
 
-HetNieuws.app is a sophisticated news aggregation and content rewriting platform that leverages AI to transform and localize news content for Dutch audiences. The platform combines web scraping, AI-powered content rewriting, and modern web technologies to deliver fresh, engaging news content.
+**HetNieuws.app** is a sophisticated, open-source news aggregation and content rewriting platform that leverages artificial intelligence to transform and localize news content specifically for Dutch audiences. This platform seamlessly combines advanced web scraping techniques, OpenAI-powered content rewriting, and modern web technologies to deliver fresh, engaging, and culturally relevant news content.
+
+### 🎯 Key Benefits
+- **🌍 Global to Local**: Transform international news into Dutch-focused content
+- **🤖 AI-Enhanced**: Leverage GPT models for intelligent content rewriting
+- **📱 Mobile-First**: Responsive design optimized for all devices
+- **⚡ Real-Time**: Live content updates with Firebase integration
+- **🔍 SEO Optimized**: Built-in search engine optimization
+- **🛡️ Secure**: Firebase security rules and authentication
 
 ## ✨ Key Features
 
