@@ -1,0 +1,23 @@
+// Firestore Security Rules for HetNieuws.app
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Allow read access to published articles
+    match /HetNieuws.RW/{articleId} {
+      allow read: if true; // Public read access for published articles
+      allow write: if false; // Only server-side writes through Admin SDK
+    }
+    
+    // Raw articles collection - restricted access
+    match /HetNieuws.Raw/{articleId} {
+      allow read: if false; // No public read access to raw articles
+      allow write: if false; // Only server-side writes through Admin SDK
+    }
+    
+    // Analytics or other collections (if needed)
+    match /{collection}/{document=**} {
+      allow read, write: if false; // Deny all other access by default
+    }
+  }
+}

@@ -72,3 +72,15 @@ node_modules/
 # dotenv environment variables file
 .env
 node_modules/
+.vercel
+
+# Firebase Service Account Keys (NEVER commit these!)
+serviceAccountKey.json
+*-firebase-adminsdk-*.json
+firebase-adminsdk-*.json
+
+# Other sensitive files
+*.pem
+*.p12
+*.key
+credentials.json
