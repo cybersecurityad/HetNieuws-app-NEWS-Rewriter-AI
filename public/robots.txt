@@ -1,0 +1,22 @@
+User-agent: *
+Allow: /
+
+# Sitemaps
+Sitemap: https://hetnieuws.app/sitemap.xml
+
+# SEO optimized robots.txt for HetNieuws.app
+# Allow all search engines to crawl the site
+
+# Allow crawling of main pages
+Allow: /category/
+Allow: /media/
+Allow: /resources/
+
+# Disallow admin and private areas
+Disallow: /admin/
+Disallow: /private/
+Disallow: /.firebase/
+Disallow: /node_modules/
+
+# Crawl delay for respectful crawling
+Crawl-delay: 1

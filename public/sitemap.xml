@@ -1,13 +1,62 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:news="http://www.google.com/schemas/sitemap-news/0.9">
+	<!-- Main Page -->
 	<url>
-		<loc>https://HetNieuws.App/index.html</loc>
-		<lastmod>2024-07-31</lastmod>
+		<loc>https://hetnieuws.app/</loc>
+		<lastmod>2025-08-26</lastmod>
+		<changefreq>daily</changefreq>
+		<priority>1.0</priority>
+	</url>
+	
+	<!-- Category Pages -->
+	<url>
+		<loc>https://hetnieuws.app/category/politiek/</loc>
+		<lastmod>2025-08-26</lastmod>
+		<changefreq>daily</changefreq>
+		<priority>0.8</priority>
 	</url>
 	<url>
-		<loc>https://HetNieuws.App/blog-nl/index.html</loc>
+		<loc>https://hetnieuws.app/category/sport/</loc>
+		<lastmod>2025-08-26</lastmod>
+		<changefreq>daily</changefreq>
+		<priority>0.8</priority>
 	</url>
 	<url>
-		<loc>https://HetNieuws.App/blogx/index.html</loc>
+		<loc>https://hetnieuws.app/category/cultuur/</loc>
+		<lastmod>2025-08-26</lastmod>
+		<changefreq>daily</changefreq>
+		<priority>0.8</priority>
+	</url>
+	<url>
+		<loc>https://hetnieuws.app/category/gezondheid/</loc>
+		<lastmod>2025-08-26</lastmod>
+		<changefreq>daily</changefreq>
+		<priority>0.8</priority>
+	</url>
+	<url>
+		<loc>https://hetnieuws.app/category/nieuws/</loc>
+		<lastmod>2025-08-26</lastmod>
+		<changefreq>hourly</changefreq>
+		<priority>0.9</priority>
+	</url>
+	
+	<!-- Individual Articles (Dynamic - Updated by content system) -->
+	<url>
+		<loc>https://hetnieuws.app/category/politiek/europese-unie-besloten-ursula.html</loc>
+		<lastmod>2025-08-26</lastmod>
+		<changefreq>weekly</changefreq>
+		<priority>0.7</priority>
+	</url>
+	<url>
+		<loc>https://hetnieuws.app/category/sport/duitse-politie-reageert-boze.html</loc>
+		<lastmod>2025-08-26</lastmod>
+		<changefreq>weekly</changefreq>
+		<priority>0.7</priority>
+	</url>
+	<url>
+		<loc>https://hetnieuws.app/category/cultuur/huis-marilyn-monroe-los.html</loc>
+		<lastmod>2025-08-26</lastmod>
+		<changefreq>weekly</changefreq>
+		<priority>0.7</priority>
 	</url>
 </urlset>
