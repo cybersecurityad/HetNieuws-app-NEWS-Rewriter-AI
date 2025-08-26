@@ -84,3 +84,6 @@ firebase-adminsdk-*.json
 *.p12
 *.key
 credentials.json
+
+# Development workspace
+workspace/
